@@ -1,0 +1,9 @@
+version: "3.3"
+
+services:
+  accountservice:
+    build:
+      context: accountservice
+    image: gotter_accountservice
+    ports:
+      - "6767:6767"
