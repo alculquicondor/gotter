@@ -2,6 +2,7 @@ package service
 
 
 import (
+    "fmt"
     "strconv"
     "encoding/json"
     "net/http"
@@ -11,6 +12,7 @@ import (
 
 
 var DBClient dbclient.IBoltClient
+var IsHealthy = true
 
 
 func GetAccount(w http.ResponseWriter, r *http.Request) {
@@ -28,13 +30,25 @@ func GetAccount(w http.ResponseWriter, r *http.Request) {
 
 func HealthCheck(w http.ResponseWriter, r *http.Request) {
     dbUp := DBClient.Check()
-    if dbUp {
+    if dbUp && IsHealthy {
         data, _ := json.Marshal(HealthCheckResponse{Status: "UP"})
         WriteJsonResponse(w, http.StatusOK, data)
     } else {
-        data, _ := json.Marshal(HealthCheckResponse{Status: "Database unaccessible"})
+        data, _ := json.Marshal(HealthCheckResponse{Status: "Database inaccessible"})
         WriteJsonResponse(w, http.StatusServiceUnavailable, data)
     }
+}
+
+
+func SetHealthyState(w http.ResponseWriter, r *http.Request) {
+    state, err := strconv.ParseBool(mux.Vars(r)["state"])
+    if err != nil {
+        fmt.Println("Invalid request to SetHealthyState, allowed values are true or false")
+        w.WriteHeader(http.StatusBadRequest)
+        return
+    }
+    IsHealthy = state
+    w.WriteHeader(http.StatusOK)
 }
 
 

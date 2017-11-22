@@ -1,5 +1,6 @@
 GOFLAGS := --ldflags '-w -linkmode external'
 CC := $(shell which musl-clang)
+STACK := gotter
 
 all: images
 
@@ -25,3 +26,9 @@ clean:
 	rm -f \
 	accountservice/accountservice-linux-amd64
 	healthchecker/healthchecker-linux-amd64
+
+deploy:
+	docker deploy -c docker-compose.yml ${STACK}
+
+rm_stack
+	docker stack rm ${STACK}

@@ -23,4 +23,10 @@ var routes = []Route {
         "/health",
         HealthCheck,
     },
+    {
+        "Testability",
+        "GET",
+        "/testability/healthy/{state}",
+        SetHealthyState,
+    },
 }
