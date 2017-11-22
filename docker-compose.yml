@@ -3,7 +3,19 @@ version: "3.3"
 services:
   accountservice:
     build:
-      context: accountservice
+      context: .
+      dockerfile: accountservice/Dockerfile
     image: gotter_accountservice
     ports:
       - "6767:6767"
+
+  swarmvisualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager

@@ -17,4 +17,10 @@ var routes = []Route {
         "/accounts/{accountId}",
         GetAccount,
     },
+    {
+        "HealthCheck",
+        "GET",
+        "/health",
+        HealthCheck,
+    },
 }
