@@ -7,6 +7,7 @@ import (
     "encoding/json"
     "net/http"
     "github.com/alculquicondor/gotter/accountservice/dbclient"
+    "github.com/alculquicondor/gotter/utils"
     "github.com/gorilla/mux"
 )
 
@@ -22,6 +23,7 @@ func GetAccount(w http.ResponseWriter, r *http.Request) {
         w.WriteHeader(http.StatusNotFound)
         return
     }
+    account.ServedBy = utils.GetIP()
 
     data, _ := json.Marshal(account)
     WriteJsonResponse(w, http.StatusOK, data)

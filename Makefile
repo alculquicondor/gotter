@@ -14,7 +14,8 @@ accountservice/accountservice-linux-amd64: \
 		accountservice/service/router.go \
 		accountservice/service/routes.go \
 		accountservice/service/webserver.go \
-		accountservice/main.go
+		accountservice/main.go \
+		utils/netutils.go
 	cd accountservice && \
 	CC=${CC} go build ${GOFLAGS} -o accountservice-linux-amd64
 
@@ -28,7 +29,7 @@ clean:
 	healthchecker/healthchecker-linux-amd64
 
 deploy:
-	docker deploy -c docker-compose.yml ${STACK}
+	docker stack deploy -c docker-compose.yml ${STACK}
 
-rm_stack
+rm_stack:
 	docker stack rm ${STACK}

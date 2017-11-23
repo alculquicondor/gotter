@@ -8,6 +8,8 @@ services:
     image: gotter_accountservice
     ports:
       - "6767:6767"
+    deploy:
+      replicas: 3
 
   swarmvisualizer:
     image: dockersamples/visualizer:stable
