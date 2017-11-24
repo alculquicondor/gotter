@@ -4,10 +4,14 @@ STACK := gotter
 
 all: images
 
-images: accountservice/accountservice-linux-amd64 healthchecker/healthchecker-linux-amd64
+images: accountservice/accountservice-linux-amd64 \
+		healthchecker/healthchecker-linux-amd64 \
+		support/config-server/build/libs/config-server-0.0.1-SNAPSHOT.jar
 	docker-compose build
 
 accountservice/accountservice-linux-amd64: \
+		accountservice/config/events.go \
+		accountservice/config/loader.go \
 		accountservice/dbclient/boltclient.go \
 		accountservice/model/account.go \
 		accountservice/service/handlers.go \
@@ -22,6 +26,11 @@ accountservice/accountservice-linux-amd64: \
 healthchecker/healthchecker-linux-amd64: healthchecker/main.go
 	cd healthchecker && \
 	CC=${CC} go build ${GOFLAGS} -o healthchecker-linux-amd64
+
+support/config-server/build/libs/config-server-0.0.1-SNAPSHOT.jar: \
+		support/config-server/src/main/resources/application.yml
+	cd support/config-server && \
+	./gradlew build
 
 clean:
 	rm -f \

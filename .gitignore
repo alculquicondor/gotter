@@ -1,1 +1,5 @@
 *-linux-amd64
+.jar
+support/config-server/build/
+support/config-server/.gradle/
+server.jks

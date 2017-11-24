@@ -16,6 +16,22 @@ services:
     deploy:
       replicas: 2
 
+  rabbitmq:
+    build:
+      context: support/rabbitmq
+    image: gotter_rabbitmq
+    ports:
+      - "1883:1883"
+      - "5672:5672"
+      - "15672:15672"
+
+  configserver:
+    build:
+      context: support/config-server
+    image: gotter_configservice
+    ports:
+      - "8888:8888"
+
   swarmvisualizer:
     image: dockersamples/visualizer:stable
     ports:
