@@ -5,39 +5,69 @@ import (
     "fmt"
     "strconv"
     "encoding/json"
+    "io/ioutil"
     "net/http"
     "github.com/alculquicondor/gotter/accountservice/dbclient"
     "github.com/alculquicondor/gotter/utils"
     "github.com/gorilla/mux"
+    "github.com/alculquicondor/gotter/accountservice/model"
 )
 
 
-var DBClient dbclient.IBoltClient
-var IsHealthy = true
+var DbClient dbclient.IBoltClient
+var isHealthy = true
+var client = &http.Client{}
+
+
+func init() {
+    var transport http.RoundTripper = &http.Transport{
+        DisableKeepAlives: true,
+    }
+    client.Transport = transport
+}
 
 
 func GetAccount(w http.ResponseWriter, r *http.Request) {
     var accountId = mux.Vars(r)["accountId"]
-    account, err := DBClient.QueryAccount(accountId)
+    account, err := DbClient.QueryAccount(accountId)
     if err != nil {
         w.WriteHeader(http.StatusNotFound)
         return
     }
     account.ServedBy = utils.GetIP()
 
+    quote, err := getQuote()
+    if err == nil {
+        account.Quote = quote
+    }
+
     data, _ := json.Marshal(account)
-    WriteJsonResponse(w, http.StatusOK, data)
+    writeJsonResponse(w, http.StatusOK, data)
+}
+
+
+func getQuote() (model.Quote, error) {
+    req, _ := http.NewRequest("GET", "http://quotesservice:8080/api/quote?strength=4", nil)
+    resp, err := client.Do(req)
+    if err == nil && resp.StatusCode == 200 {
+        quote := model.Quote{}
+        bytes, _ := ioutil.ReadAll(resp.Body)
+        json.Unmarshal(bytes, &quote)
+        return quote, nil
+    } else {
+        return model.Quote{}, fmt.Errorf("some error ocurred with quotesservice")
+    }
 }
 
 
 func HealthCheck(w http.ResponseWriter, r *http.Request) {
-    dbUp := DBClient.Check()
-    if dbUp && IsHealthy {
-        data, _ := json.Marshal(HealthCheckResponse{Status: "UP"})
-        WriteJsonResponse(w, http.StatusOK, data)
+    dbUp := DbClient.Check()
+    if dbUp && isHealthy {
+        data, _ := json.Marshal(healthCheckResponse{Status: "UP"})
+        writeJsonResponse(w, http.StatusOK, data)
     } else {
-        data, _ := json.Marshal(HealthCheckResponse{Status: "Database inaccessible"})
-        WriteJsonResponse(w, http.StatusServiceUnavailable, data)
+        data, _ := json.Marshal(healthCheckResponse{Status: "Database inaccessible"})
+        writeJsonResponse(w, http.StatusServiceUnavailable, data)
     }
 }
 
@@ -49,12 +79,12 @@ func SetHealthyState(w http.ResponseWriter, r *http.Request) {
         w.WriteHeader(http.StatusBadRequest)
         return
     }
-    IsHealthy = state
+    isHealthy = state
     w.WriteHeader(http.StatusOK)
 }
 
 
-func WriteJsonResponse(w http.ResponseWriter, status int, data []byte) {
+func writeJsonResponse(w http.ResponseWriter, status int, data []byte) {
     w.Header().Set("Content-Type", "application/json")
     w.Header().Set("Content-Length", strconv.Itoa(len(data)))
     w.WriteHeader(status)
@@ -62,6 +92,6 @@ func WriteJsonResponse(w http.ResponseWriter, status int, data []byte) {
 }
 
 
-type HealthCheckResponse struct {
+type healthCheckResponse struct {
     Status string `json:"status"`
 }

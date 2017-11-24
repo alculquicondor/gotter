@@ -52,15 +52,15 @@ func (bc *BoltClient) QueryAccount(accountId string) (model.Account, error) {
 }
 
 func (bc *BoltClient) Seed() {
-    bc.InitializeBucket()
-    bc.SeedAccounts()
+    bc.initializeBucket()
+    bc.seedAccounts()
 }
 
 func (bc *BoltClient) Check() bool {
     return bc.boltDB != nil
 }
 
-func (bc *BoltClient) InitializeBucket() {
+func (bc *BoltClient) initializeBucket() {
     bc.boltDB.Update(func (tx *bolt.Tx) error {
         _, err := tx.CreateBucket([]byte(AccountBucketName))
         if err != nil {
@@ -70,7 +70,7 @@ func (bc *BoltClient) InitializeBucket() {
     })
 }
 
-func (bc *BoltClient) SeedAccounts() {
+func (bc *BoltClient) seedAccounts() {
     total := 100
     for i:= 0; i < total; i++ {
         key := strconv.Itoa(10000 + i)

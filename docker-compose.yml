@@ -11,6 +11,11 @@ services:
     deploy:
       replicas: 3
 
+  quotesservice:
+    image: eriklupander/quotes-service:latest
+    deploy:
+      replicas: 2
+
   swarmvisualizer:
     image: dockersamples/visualizer:stable
     ports:
