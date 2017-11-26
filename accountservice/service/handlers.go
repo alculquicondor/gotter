@@ -8,7 +8,7 @@ import (
     "io/ioutil"
     "net/http"
     "github.com/alculquicondor/gotter/accountservice/dbclient"
-    "github.com/alculquicondor/gotter/utils"
+    "github.com/alculquicondor/gotter/common/netutils"
     "github.com/gorilla/mux"
     "github.com/alculquicondor/gotter/accountservice/model"
 )
@@ -34,7 +34,7 @@ func GetAccount(w http.ResponseWriter, r *http.Request) {
         w.WriteHeader(http.StatusNotFound)
         return
     }
-    account.ServedBy = utils.GetIP()
+    account.ServedBy = netutils.GetIP()
 
     quote, err := getQuote()
     if err == nil {
