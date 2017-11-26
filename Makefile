@@ -10,8 +10,6 @@ images: accountservice/accountservice-linux-amd64 \
 	docker-compose build
 
 accountservice/accountservice-linux-amd64: \
-		accountservice/config/events.go \
-		accountservice/config/loader.go \
 		accountservice/dbclient/boltclient.go \
 		accountservice/model/account.go \
 		accountservice/service/handlers.go \
@@ -19,7 +17,9 @@ accountservice/accountservice-linux-amd64: \
 		accountservice/service/routes.go \
 		accountservice/service/webserver.go \
 		accountservice/main.go \
-		utils/netutils.go
+		common/config/events.go \
+		common/config/loader.go \
+		common/netutils/utils.go
 	cd accountservice && \
 	CC=${CC} go build ${GOFLAGS} -o accountservice-linux-amd64
 

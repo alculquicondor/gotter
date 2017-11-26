@@ -6,7 +6,7 @@ import (
     "github.com/alculquicondor/gotter/accountservice/dbclient"
     "github.com/alculquicondor/gotter/accountservice/service"
     "github.com/spf13/viper"
-    "github.com/alculquicondor/gotter/accountservice/config"
+    "github.com/alculquicondor/gotter/common/config"
 )
 
 
