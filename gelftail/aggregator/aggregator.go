@@ -20,7 +20,7 @@ func Start(bulkQueue chan []byte, authToken string) {
         buf.WriteString("\n")
 
         size := buf.Len()
-        if size > 1024 {
+        if size > 512 {
             sendBulk(*buf)
             buf.Reset()
         }

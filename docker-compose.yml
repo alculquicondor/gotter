@@ -9,7 +9,7 @@ services:
     ports:
       - "6767:6767"
     deploy:
-      replicas: 1
+      replicas: 3
     logging:
       driver: "gelf"
       options:
