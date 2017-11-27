@@ -1,16 +1,16 @@
 package main
 
 import (
-    "fmt"
     "flag"
+    "os"
+    "os/signal"
+    "syscall"
     "github.com/alculquicondor/gotter/accountservice/dbclient"
     "github.com/alculquicondor/gotter/accountservice/service"
     "github.com/spf13/viper"
     "github.com/alculquicondor/gotter/common/config"
     "github.com/alculquicondor/gotter/common/messaging"
-    "os"
-    "os/signal"
-    "syscall"
+    "github.com/sirupsen/logrus"
 )
 
 
@@ -27,11 +27,20 @@ func init() {
     viper.Set("profile", *profile)
     viper.Set("configServerUrl", *configServerUrl)
     viper.Set("configBranch", *configBranch)
+
+    if *profile == "dev" {
+        logrus.SetFormatter(&logrus.TextFormatter{
+            TimestampFormat: "2006-01-02T15:04:05.000",
+            FullTimestamp: true,
+        })
+    } else {
+        logrus.SetFormatter(&logrus.JSONFormatter{})
+    }
 }
 
 
 func main() {
-    fmt.Printf("Starting %v\n", appName)
+    logrus.Infof("Starting %v", appName)
 
     config.LoadConfigurationFromBranch(
         viper.GetString("configServerUrl"),

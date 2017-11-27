@@ -1,12 +1,12 @@
 package dbclient
 
 import (
-    "fmt"
-    "log"
     "strconv"
+    "fmt"
     "encoding/json"
 	"github.com/alculquicondor/gotter/accountservice/model"
     "github.com/boltdb/bolt"
+    "github.com/sirupsen/logrus"
 )
 
 
@@ -29,7 +29,7 @@ func (bc *BoltClient) OpenBoltDb() {
     var err error
     bc.boltDB, err = bolt.Open("accounts.db", 0600, nil)
     if err != nil {
-        log.Fatal(err)
+        logrus.Fatal(err)
     }
 }
 
@@ -40,7 +40,7 @@ func (bc *BoltClient) QueryAccount(accountId string) (model.Account, error) {
         b := tx.Bucket([]byte("AccountBucket"))
         accountBytes := b.Get([]byte(accountId))
         if accountBytes == nil {
-            return fmt.Errorf("No account for %s", accountId)
+            return fmt.Errorf("no account for %s", accountId)
         }
         json.Unmarshal(accountBytes, &account)
         return nil
@@ -87,5 +87,5 @@ func (bc *BoltClient) seedAccounts() {
             return b.Put([]byte(key), jsonBytes)
         })
     }
-    fmt.Printf("Seeded %v fake accounts...\n", total)
+    logrus.Debugf("Seeded %v fake accounts...\n", total)
 }

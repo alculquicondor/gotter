@@ -3,3 +3,4 @@
 support/config-server/build/
 support/config-server/.gradle/
 server.jks
+gelftail/token.txt

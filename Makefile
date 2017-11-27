@@ -7,7 +7,10 @@ all: images
 images: accountservice/accountservice-linux-amd64 \
 		healthchecker/healthchecker-linux-amd64 \
 		vipservice/vipservice-linux-amd64 \
-		support/config-server/build/libs/config-server-0.0.1-SNAPSHOT.jar
+		gelftail/gelftail-linux-amd64 \
+		gelftail/token.txt \
+		support/config-server/build/libs/config-server-0.0.1-SNAPSHOT.jar \
+		docker-compose.yml
 	docker-compose build
 
 
@@ -43,6 +46,14 @@ vipservice/vipservice-linux-amd64: \
 healthchecker/healthchecker-linux-amd64: healthchecker/main.go
 	cd healthchecker && \
 	CC=${CC} go build ${GOFLAGS} -o healthchecker-linux-amd64
+
+gelftail/gelftail-linux-amd64: \
+		gelftail/aggregator/aggregator.go \
+		gelftail/transformer/transformer.go \
+		gelftail/transformer/transformer.go \
+		gelftail/gelftail.go
+	cd gelftail && \
+	CC=${CC} go build ${GOFLAGS} -o gelftail-linux-amd64
 
 
 support/config-server/build/libs/config-server-0.0.1-SNAPSHOT.jar: \

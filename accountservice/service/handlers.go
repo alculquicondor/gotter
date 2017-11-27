@@ -13,6 +13,7 @@ import (
     "github.com/gorilla/mux"
     "github.com/alculquicondor/gotter/accountservice/model"
     "github.com/alculquicondor/gotter/common/messaging"
+    "github.com/sirupsen/logrus"
 )
 
 
@@ -60,7 +61,7 @@ func notifyVIP(account model.Account) {
             data, _ := json.Marshal(vipNotification)
             err := MessagingClient.PublishOnQueue(data, "vip_queue")
             if err != nil {
-                fmt.Println(err.Error())
+                logrus.Error(err)
             }
         }(account)
     }
@@ -96,7 +97,7 @@ func HealthCheck(w http.ResponseWriter, r *http.Request) {
 func SetHealthyState(w http.ResponseWriter, r *http.Request) {
     state, err := strconv.ParseBool(mux.Vars(r)["state"])
     if err != nil {
-        fmt.Println("Invalid request to SetHealthyState, allowed values are true or false")
+        logrus.Warning("Invalid request to SetHealthyState, allowed values are true or false")
         w.WriteHeader(http.StatusBadRequest)
         return
     }

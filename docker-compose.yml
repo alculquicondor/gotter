@@ -10,6 +10,11 @@ services:
       - "6767:6767"
     deploy:
       replicas: 1
+    logging:
+      driver: "gelf"
+      options:
+        gelf-address: "udp://127.0.0.1:12202"
+        gelf-compression-type: "none"
 
   vipservice:
     build:
@@ -41,6 +46,13 @@ services:
     image: gotter_configservice
     ports:
       - "8888:8888"
+
+  gelftail:
+    build:
+      context: gelftail
+    image: gotter_gelftail
+    ports:
+      - "12202:12202/udp"
 
   swarmvisualizer:
     image: dockersamples/visualizer:stable

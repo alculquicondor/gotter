@@ -11,6 +11,7 @@ import (
     "os"
     "os/signal"
     "syscall"
+    "github.com/sirupsen/logrus"
 )
 
 
@@ -31,7 +32,7 @@ func init() {
 
 
 func main() {
-    fmt.Println("Starting " + appName + "...")
+    logrus.Info("Starting " + appName + "...")
 
     config.LoadConfigurationFromBranch(viper.GetString("configServerUrl"), appName,
         viper.GetString("profile"), viper.GetString("configBranch"))
@@ -47,7 +48,7 @@ func main() {
 
 
 func onMessage(delivery amqp.Delivery) {
-    fmt.Printf("Got a message: %v\n", string(delivery.Body))
+    logrus.Infof("Got a message: %v", string(delivery.Body))
 }
 
 
@@ -81,7 +82,7 @@ func handleSigterm(handleExit func()) {
 
 func failOnError(err error, msg string) {
     if err != nil {
-        fmt.Printf("%s: %s", msg, err)
+        logrus.Fatalf("%s: %s", msg, err)
         panic(fmt.Sprintf("%s: %s", msg, err))
     }
 }

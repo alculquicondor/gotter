@@ -1,11 +1,11 @@
 package config
 
 import (
-    "log"
     "github.com/streadway/amqp"
     "encoding/json"
     "strings"
     "github.com/spf13/viper"
+    "github.com/sirupsen/logrus"
 )
 
 
@@ -15,10 +15,10 @@ func HandleRefreshEvent(d amqp.Delivery) {
     updateToken := &UpdateToken{}
     err := json.Unmarshal(body, updateToken)
     if err != nil {
-        log.Printf("Problem parsing UpdateToken: %v", err.Error())
+        logrus.Warningf("Problem parsing UpdateToken: %v", err.Error())
     } else {
         if strings.Contains(updateToken.DestinationService, consumerTag) {
-            log.Println("Reloading Viper config from Spring Cloud Config server")
+            logrus.Info("Reloading Viper config from Spring Cloud Config server")
 
             // Consumertag is same as application name.
             LoadConfigurationFromBranch(
