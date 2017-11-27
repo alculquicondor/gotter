@@ -9,12 +9,22 @@ services:
     ports:
       - "6767:6767"
     deploy:
-      replicas: 3
+      replicas: 1
+
+  vipservice:
+    build:
+      context: .
+      dockerfile: vipservice/Dockerfile
+    image: gotter_vipservice
+    ports:
+      - "6868:6868"
+    deploy:
+      replicas: 2
 
   quotesservice:
     image: eriklupander/quotes-service:latest
     deploy:
-      replicas: 2
+      replicas: 1
 
   rabbitmq:
     build:

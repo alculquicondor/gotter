@@ -6,12 +6,16 @@ all: images
 
 images: accountservice/accountservice-linux-amd64 \
 		healthchecker/healthchecker-linux-amd64 \
+		vipservice/vipservice-linux-amd64 \
 		support/config-server/build/libs/config-server-0.0.1-SNAPSHOT.jar
 	docker-compose build
+
 
 accountservice/accountservice-linux-amd64: \
 		accountservice/dbclient/boltclient.go \
 		accountservice/model/account.go \
+		accountservice/model/healthcheck.go \
+		accountservice/model/vipnotification.go \
 		accountservice/service/handlers.go \
 		accountservice/service/router.go \
 		accountservice/service/routes.go \
@@ -19,13 +23,27 @@ accountservice/accountservice-linux-amd64: \
 		accountservice/main.go \
 		common/config/events.go \
 		common/config/loader.go \
+		common/messaging/messagingclient.go \
 		common/netutils/utils.go
 	cd accountservice && \
 	CC=${CC} go build ${GOFLAGS} -o accountservice-linux-amd64
 
+
+vipservice/vipservice-linux-amd64: \
+		vipservice/service/router.go \
+		vipservice/service/routes.go \
+		vipservice/service/webserver.go \
+		vipservice/main.go \
+		common/config/events.go \
+		common/config/loader.go \
+		common/messaging/messagingclient.go
+	cd vipservice && \
+	CC=${CC} go build ${GOFLAGS} -o vipservice-linux-amd64
+
 healthchecker/healthchecker-linux-amd64: healthchecker/main.go
 	cd healthchecker && \
 	CC=${CC} go build ${GOFLAGS} -o healthchecker-linux-amd64
+
 
 support/config-server/build/libs/config-server-0.0.1-SNAPSHOT.jar: \
 		support/config-server/src/main/resources/application.yml
