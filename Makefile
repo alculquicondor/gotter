@@ -61,6 +61,12 @@ support/config-server/build/libs/config-server-0.0.1-SNAPSHOT.jar: \
 	cd support/config-server && \
 	./gradlew build
 
+
+loadtest/loadtest: loadtest/main.go
+	cd loadtest && \
+	CC=${CC} go build ${GOFLAGS} -o loadtest
+
+
 clean:
 	rm -f \
 	accountservice/accountservice-linux-amd64

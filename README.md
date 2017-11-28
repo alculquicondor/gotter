@@ -42,7 +42,16 @@ make deploy
 
 ```sh
 docker stack ps gotter
-docker service ls
+docker service ls -baseAddr=127.0.0.1 -zuul=false
 ```
 
 8. Visualize containers in http://127.0.0.1:8080
+
+## Load Testing
+
+1. Build the load generator
+
+```sh
+make loadtest/loadtest
+./loadtest/loadtest -
+```
